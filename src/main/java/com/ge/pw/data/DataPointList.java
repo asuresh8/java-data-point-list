@@ -108,6 +108,14 @@ public class DataPointList extends ArrayList<DataPoint> {
         return output;
     }
 
+    public DataPoint getFirst() {
+        return this.get(0);
+    }
+
+    public DataPoint getLast() {
+        return this.get(this.size()-1);
+    }
+
     public int getNearestIndex(Date date) {
         int firstIndex = 0;
         int lastIndex = this.size() - 1;
