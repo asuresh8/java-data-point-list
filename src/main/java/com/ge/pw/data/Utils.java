@@ -6,18 +6,18 @@ import java.util.Date;
 /**
  * Created by 502659149 on 11/14/2016.
  */
-public class DataUtils {
+public class Utils {
 
-    public ArrayList<DateWindow> cleanup(ArrayList<DateWindow> windows) {
+    public static ArrayList<Window> cleanup(ArrayList<Window> windows) {
         return cleanup(windows, 0);
     }
 
-    public ArrayList<DateWindow> cleanup(ArrayList<DateWindow> windows, long minLength) {
+    public static ArrayList<Window> cleanup(ArrayList<Window> windows, long minLength) {
         return cleanup(windows, minLength, 60000);
     }
 
-    public static ArrayList<DateWindow> cleanup(ArrayList<DateWindow> windows, long minLength, long maxCombineLength) {
-        ArrayList<DateWindow> outWindows = new ArrayList<DateWindow>();
+    public static ArrayList<Window> cleanup(ArrayList<Window> windows, long minLength, long maxCombineLength) {
+        ArrayList<Window> outWindows = new ArrayList<Window>();
         if(windows.size() <1) {
             return outWindows;
         }
@@ -27,7 +27,7 @@ public class DataUtils {
             if (windows.get(i).getDuration() > minLength) {
                 for (int j=0; j<outWindows.size(); j++) {
                     if(outWindows.get(j).overlaps(windows.get(i), maxCombineLength)) {
-                        DateWindow tempWindow = new DateWindow(outWindows.get(j));
+                        Window tempWindow = new Window(outWindows.get(j));
                         tempWindow = tempWindow.union(windows.get(i));
                         outWindows.set(j, tempWindow);
                         windowJoined = true;
@@ -42,19 +42,19 @@ public class DataUtils {
         return outWindows;
     }
 
-    public ArrayList<DateWindow> cleanup(ArrayList<DateWindow> windows, long minLength, DataPointList data,
-                                         double deltaThreshold) {
-        ArrayList<DateWindow> outWindows = new ArrayList<DateWindow>();
+    public static ArrayList<Window> cleanup(ArrayList<Window> windows, long minLength, PointList data,
+                                     double deltaThreshold) {
+        ArrayList<Window> outWindows = new ArrayList<Window>();
         if (windows.size() < 1) {
             return outWindows;
         }
-        for (DateWindow w : windows) {
+        for (Window w : windows) {
             //check if close to start of next one
             boolean windowJoined = false;
             if (w.getDuration() > minLength && Math.abs(data.get(w.end).value - data.get(w.start).value) > deltaThreshold) {
                 for (int j = 0; j < outWindows.size(); j++) {
                     if (outWindows.get(j).overlaps(w, 60000)) {
-                        DateWindow tempWindow = new DateWindow(outWindows.get(j));
+                        Window tempWindow = new Window(outWindows.get(j));
                         tempWindow = tempWindow.union(w);
                         outWindows.set(j, tempWindow);
                         windowJoined = true;
@@ -69,21 +69,21 @@ public class DataUtils {
         return outWindows;
     }
 
-    public ArrayList<DateWindow> getConverseWindows(ArrayList<DateWindow> windows, Date firstDate, Date lastDate) {
-        ArrayList<DateWindow> outWindows = new ArrayList<DateWindow>();
+    public static ArrayList<Window> getConverseWindows(ArrayList<Window> windows, Date firstDate, Date lastDate) {
+        ArrayList<Window> outWindows = new ArrayList<Window>();
         if (windows.size()<1) {
-            DateWindow temp = new DateWindow(firstDate, lastDate);
+            Window temp = new Window(firstDate, lastDate);
             outWindows.add(temp);
             return outWindows;
         }
         if (firstDate.before(windows.get(0).start)){
-            outWindows.add(new DateWindow(firstDate, windows.get(0).start));
+            outWindows.add(new Window(firstDate, windows.get(0).start));
         }
         for (int i=0; i<windows.size()-1; i++) {
-            outWindows.add(new DateWindow(windows.get(i).end, windows.get(i+1).start));
+            outWindows.add(new Window(windows.get(i).end, windows.get(i+1).start));
         }
         if (lastDate.after(windows.get(0).end)){
-            outWindows.add(new DateWindow(windows.get(windows.size()-1).end, lastDate));
+            outWindows.add(new Window(windows.get(windows.size()-1).end, lastDate));
         }
         return outWindows;
     }

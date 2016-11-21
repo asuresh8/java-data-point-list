@@ -7,36 +7,36 @@ import java.util.Date;
 /**
  * Created by 212464591 on 6/21/2016.
  */
-public class DateWindow implements Comparator<DateWindow>, Comparable<DateWindow>{
+public class Window implements Comparator<Window>, Comparable<Window>{
     public Date start;
     public Date end;
     public String type;
 
-    public DateWindow(){}
+    public Window(){}
 
-    public DateWindow(Date start, Date end) {
+    public Window(Date start, Date end) {
         this.start = start;
         this.end = end;
     }
 
-    public DateWindow(Date start, Date end, String type) {
+    public Window(Date start, Date end, String type) {
         this.start = start;
         this.end = end;
         this.type = type;
     }
 
-    public DateWindow(DateWindow d){
+    public Window(Window d){
         this.start = d.start;
         this.end = d.end;
         this.type = d.type;
     }
 
-    public DateWindow getWindow(){
-        return new DateWindow(this.start, this.end);
+    public Window getWindow(){
+        return new Window(this.start, this.end);
     }
 
-    public DateWindow getWindow(String type) {
-        return new DateWindow(this.start, this.end, type);
+    public Window getWindow(String type) {
+        return new Window(this.start, this.end, type);
     }
 
     public long getDuration(){
@@ -47,7 +47,7 @@ public class DateWindow implements Comparator<DateWindow>, Comparable<DateWindow
         return (date.after(start) && date.before(end)) || (date.getTime() == this.start.getTime() || date.getTime() == this.end.getTime()) ;
     }
 
-    public void intersect(DateWindow d) {
+    public void intersect(Window d) {
         if(this.start.before(d.start)) {
             this.start = d.start;
         }
@@ -56,8 +56,8 @@ public class DateWindow implements Comparator<DateWindow>, Comparable<DateWindow
         }
     }
 
-    public DateWindow union(DateWindow d){
-        DateWindow copy = new DateWindow(this.start, this.end, this.type);
+    public Window union(Window d){
+        Window copy = new Window(this.start, this.end, this.type);
         copy.extend(d.start);
         copy.extend(d.end);
         return copy;
@@ -73,14 +73,14 @@ public class DateWindow implements Comparator<DateWindow>, Comparable<DateWindow
         }
     }
 
-    public boolean overlaps(DateWindow d, double tolerance) {
+    public boolean overlaps(Window d, double tolerance) {
         //contains or
         boolean tempContains = contains(d.start) || contains(d.end) || d.contains(this.start) || d.contains(this.end);
         boolean tempClose = getDifference(d.start) < tolerance || getDifference(d.end) < tolerance;
         return tempContains || tempClose;
     }
 
-    public boolean overlaps(DateWindow d){
+    public boolean overlaps(Window d){
         return contains(d.start) || contains(d.end);
     }
 
@@ -95,12 +95,12 @@ public class DateWindow implements Comparator<DateWindow>, Comparable<DateWindow
     }
 
     // Overriding the compareTo method
-    public int compareTo(DateWindow d){
+    public int compareTo(Window d){
         return (this.start).compareTo(d.start);
     }
 
     // Overriding the compare method to sort the age
-    public int compare(DateWindow d, DateWindow d1){
+    public int compare(Window d, Window d1){
         return (int)(d.start.getTime() - d1.start.getTime());
     }
 
